@@ -1,6 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:instagram_clone/constants/colors.dart';
+import 'package:instagram_clone/resources/auth_methods.dart';
+import 'package:instagram_clone/utils/utils.dart';
 import 'package:instagram_clone/widgets/textfield_widget.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -15,7 +20,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _passwordcontroller = TextEditingController();
   final TextEditingController _biocontroller = TextEditingController();
   final TextEditingController _usernamecontroller = TextEditingController();
-
+  Uint8List? _image;
   @override
   void dispose() {
     super.dispose();
@@ -23,6 +28,13 @@ class _SignupScreenState extends State<SignupScreen> {
     _passwordcontroller.dispose();
     _biocontroller.dispose();
     _usernamecontroller.dispose();
+  }
+
+  selectImage() async {
+    Uint8List img = await pickImage(ImageSource.gallery);
+    setState(() {
+      _image = img;
+    });
   }
 
   @override
@@ -48,16 +60,21 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             Stack(
               children: [
-                const CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      'https://media.istockphoto.com/id/1420495828/photo/african-american-man-in-vr-headset-exploring-metaverse-world-touching-virtual-reality-subjects.jpg?s=1024x1024&w=is&k=20&c=PhZgYN2qN9j8F1XPGPFpiBhSqVQ99lsL-KVkCb1zky0='),
-                  radius: 60,
-                ),
+                _image != null
+                    ? CircleAvatar(
+                        backgroundImage: MemoryImage(_image!),
+                        radius: 60,
+                      )
+                    : const CircleAvatar(
+                        backgroundImage: NetworkImage(
+                            'https://imgs.search.brave.com/DCo1P0-HDcl4cB7FJDFwBiTBT5fjI42fY8o52Botrc0/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9jZG4u/dmVjdG9yc3RvY2su/Y29tL2kvcHJldmll/dy0xeC8xNy82MS9t/YWxlLWF2YXRhci1w/cm9maWxlLXBpY3R1/cmUtdmVjdG9yLTEw/MjExNzYxLmpwZw'),
+                        radius: 60,
+                      ),
                 Positioned(
                     bottom: -14,
                     right: -14,
                     child: IconButton(
-                        onPressed: () {},
+                        onPressed: selectImage,
                         icon: const Icon(
                           Icons.add_a_photo_outlined,
                           color: blueColor,
@@ -107,6 +124,12 @@ class _SignupScreenState extends State<SignupScreen> {
               height: 10,
             ),
             InkWell(
+              onTap: () => Authmethods().signUpUser(
+                  file: _image!,
+                  email: _emailcontroller.text,
+                  password: _passwordcontroller.text,
+                  username: _usernamecontroller.text,
+                  bio: _biocontroller.text),
               child: Container(
                   width: double.infinity,
                   alignment: Alignment.center,
