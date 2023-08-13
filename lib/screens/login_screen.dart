@@ -26,14 +26,14 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
+          padding: const EdgeInsets.symmetric(horizontal: 35),
           width: double.infinity,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Flexible(
-                flex: 5,
-                child: SizedBox(),
+              Flexible(
+                flex: 2,
+                child: Container(),
               ),
               SvgPicture.asset(
                 'assets/ic_instagram.svg',
@@ -58,70 +58,93 @@ class _LoginScreenState extends State<LoginScreen> {
                 textInputType: TextInputType.text,
               ),
               const SizedBox(
-                height: 30,
+                height: 5,
               ),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 140, vertical: 10),
-                ),
-                child: const Text(
-                  'Log in',
-                  style: TextStyle(fontSize: 17),
-                ),
+              const Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                Text(
+                  'forgot password?',
+                  style: TextStyle(
+                      fontSize: 15,
+                      color: blueColor,
+                      fontWeight: FontWeight.bold),
+                )
+              ]),
+              const SizedBox(
+                height: 10,
               ),
-              ElevatedButton(
-                onPressed: () {
-                  // Add your login logic here
-                },
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.transparent,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 1,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 4),
-                          child: Text(
-                            'OR',
-                            style: TextStyle(fontSize: 14, color: Colors.white),
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            height: 1,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    const Text(
-                      'Login with Facebook',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(
-                      height: 50,
-                      child: Text(
-                        'forgot password?',
-                        style: TextStyle(fontSize: 11, color: Colors.white),
+              InkWell(
+                child: Container(
+                    width: double.infinity,
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    decoration: const ShapeDecoration(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(4)),
                       ),
+                      color: blueColor,
                     ),
-                  ],
-                ),
+                    child: const Text('Log in')),
               ),
+              const Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          thickness: 1,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        child: Text(
+                          'OR',
+                          style: TextStyle(fontSize: 14, color: Colors.white),
+                        ),
+                      ),
+                      Expanded(
+                        child: Divider(
+                          thickness: 1,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Login with Facebook',
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: blueColor,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              Flexible(
+                flex: 3,
+                child: Container(),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: const Text('Dont have an account ?'),
+                  ),
+                  GestureDetector(
+                    child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 8),
+                        child: const Text(
+                          'Sign Up',
+                          style: TextStyle(
+                              color: blueColor, fontWeight: FontWeight.bold),
+                        )),
+                  ),
+                ],
+              )
             ],
           ),
         ),
