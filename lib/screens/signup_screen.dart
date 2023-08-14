@@ -30,11 +30,24 @@ class _SignupScreenState extends State<SignupScreen> {
     _usernamecontroller.dispose();
   }
 
-  selectImage() async {
+  void selectImage() async {
     Uint8List img = await pickImage(ImageSource.gallery);
     setState(() {
       _image = img;
     });
+  }
+
+  void signUpUser() async {
+    String res = await Authmethods().signUpUser(
+      file: _image ?? Uint8List(1), // Use an empty Uint8List if _image is null
+      email: _emailcontroller.text,
+      password: _passwordcontroller.text,
+      username: _usernamecontroller.text,
+      bio: _biocontroller.text,
+    );
+    if (res != 'success') {
+      showSnackBar(res, context);
+    }
   }
 
   @override
@@ -48,8 +61,7 @@ class _SignupScreenState extends State<SignupScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: 16),
-
+                const SizedBox(height: 16),
                 SvgPicture.asset(
                   'assets/ic_instagram.svg',
                   color: primaryColor,
@@ -110,13 +122,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 const SizedBox(height: 5),
                 const SizedBox(height: 10),
                 InkWell(
-                  onTap: () => Authmethods().signUpUser(
-                    file: _image!,
-                    email: _emailcontroller.text,
-                    password: _passwordcontroller.text,
-                    username: _usernamecontroller.text,
-                    bio: _biocontroller.text,
-                  ),
+                  onTap: signUpUser,
                   child: Container(
                     width: double.infinity,
                     alignment: Alignment.center,
