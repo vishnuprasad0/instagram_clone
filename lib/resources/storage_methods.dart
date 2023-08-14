@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
+import 'package:uuid/uuid.dart';
 
 class StorageMethods {
   FirebaseStorage _storage = FirebaseStorage.instance;
@@ -14,7 +15,7 @@ class StorageMethods {
     Reference ref =
         _storage.ref().child(childName).child(_auth.currentUser!.uid);
     if (isPost) {
-      String id = id;
+      String id = const Uuid().v1();
       ref = ref.child(id);
     }
 

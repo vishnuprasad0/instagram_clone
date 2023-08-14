@@ -1,9 +1,8 @@
-import 'dart:ffi';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:instagram_clone/resources/storage_methods.dart';
 
 class Authmethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -27,21 +26,30 @@ class Authmethods {
         UserCredential usercredential = await _auth
             .createUserWithEmailAndPassword(email: email, password: password);
 
+        // add profile pic to storage
+        String profilePhotoUrl = await StorageMethods()
+            .uploadImageToStorage('profile_pictures', file, false);
+
         //add user details to db while signup
-        _firestore.collection("users").doc(usercredential.user!.uid).set({
+        await _firestore.collection("users").doc(usercredential.user!.uid).set({
           'username': username,
           'uid': usercredential.user!.uid,
           "email": email,
           "bio": bio,
           'followers': [],
           'following': [],
+          'photoUrl': profilePhotoUrl,
         });
-        debugPrint('added to db');
         res = "success";
+      }
+    }
+    //validation setup
+    on FirebaseAuthException catch (err) {
+      if (err.message == 'the email address is badly formatted') {
+        res = 'this email is badly formatted';
       }
     } catch (err) {
       res = err.toString();
-      debugPrint(res);
     }
     return res;
   }
