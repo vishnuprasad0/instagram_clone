@@ -6,6 +6,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram_clone/constants/colors.dart';
 import 'package:instagram_clone/resources/auth_methods.dart';
+import 'package:instagram_clone/responsive/mobilescreen_layout.dart';
+import 'package:instagram_clone/responsive/responsive_layoutscreen.dart';
+import 'package:instagram_clone/responsive/webscreen_layout.dart';
+import 'package:instagram_clone/screens/login_screen.dart';
 import 'package:instagram_clone/utils/utils.dart';
 import 'package:instagram_clone/widgets/textfield_widget.dart';
 
@@ -51,13 +55,22 @@ class _SignupScreenState extends State<SignupScreen> {
       username: _usernamecontroller.text,
       bio: _biocontroller.text,
     );
+    setState(() {
+      _isLoading = false;
+    });
     if (res != 'success') {
       showSnackBar(res, context);
     } else {
-      setState(() {
-        _isLoading = true;
-      });
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => const ResponsiveLayout(
+              webScreenLayout: WebScreenLayout(),
+              mobileScreenLayout: MobileScreenLayout())));
     }
+  }
+
+  void navigateToLogin() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => const LoginScreen()));
   }
 
   @override
@@ -152,6 +165,26 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: const Text('have an account ?'),
+                    ),
+                    GestureDetector(
+                      onTap: navigateToLogin,
+                      child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 8),
+                          child: const Text(
+                            'Login',
+                            style: TextStyle(
+                                color: blueColor, fontWeight: FontWeight.bold),
+                          )),
+                    ),
+                  ],
+                )
               ],
             ),
           ),
