@@ -1,6 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:instagram_clone/constants/colors.dart';
+import 'package:instagram_clone/resources/auth_methods.dart';
+import 'package:instagram_clone/utils/utils.dart';
 import 'package:instagram_clone/widgets/textfield_widget.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -13,12 +17,29 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailcontroller = TextEditingController();
   final TextEditingController _passwordcontroller = TextEditingController();
+  bool _isloading = false;
 
   @override
   void dispose() {
     super.dispose();
     _emailcontroller.dispose();
     _passwordcontroller.dispose();
+  }
+
+  void logInUser() async {
+    setState(() {
+      _isloading = true;
+    });
+    String res = await Authmethods().logInUser(
+        email: _emailcontroller.text, password: _passwordcontroller.text);
+    if (res == "success") {
+      //do login
+    } else {
+      showSnackBar(res, context);
+    }
+    setState(() {
+      _isloading = false;
+    });
   }
 
   @override
@@ -73,6 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 10,
               ),
               InkWell(
+                onTap: logInUser,
                 child: Container(
                     width: double.infinity,
                     alignment: Alignment.center,
@@ -83,7 +105,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       color: blueColor,
                     ),
-                    child: const Text('Log in')),
+                    child: _isloading
+                        ? const Center(
+                            child:
+                                CircularProgressIndicator(color: primaryColor))
+                        : const Text('Log in')),
               ),
               const Column(
                 children: [

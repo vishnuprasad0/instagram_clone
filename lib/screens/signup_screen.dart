@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -20,6 +22,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _biocontroller = TextEditingController();
   final TextEditingController _usernamecontroller = TextEditingController();
   Uint8List? _image;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -38,8 +41,11 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void signUpUser() async {
+    setState(() {
+      _isLoading = true;
+    });
     String res = await Authmethods().signUpUser(
-      file: _image ?? Uint8List(1), // Use an empty Uint8List if _image is null
+      file: _image ?? Uint8List(0), // Use an empty Uint8List if _image is null
       email: _emailcontroller.text,
       password: _passwordcontroller.text,
       username: _usernamecontroller.text,
@@ -47,6 +53,10 @@ class _SignupScreenState extends State<SignupScreen> {
     );
     if (res != 'success') {
       showSnackBar(res, context);
+    } else {
+      setState(() {
+        _isLoading = true;
+      });
     }
   }
 
@@ -133,7 +143,12 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                       color: blueColor,
                     ),
-                    child: const Text('Sign Up'),
+                    child: _isLoading
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                                color: primaryColor, strokeWidth: 1.99),
+                          )
+                        : const Text('Sign Up'),
                   ),
                 ),
                 const SizedBox(height: 16),
