@@ -20,7 +20,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
     // model.User user = Provider.of<UserProvider>(context).getUser;
     // return Scaffold(body: Center(child: Text(user.bio)));
     return Scaffold(
-        body: const Center(child: Text('mobile screen')),
+        body: PageView(),
         bottomNavigationBar: InstagramTabView(
             iconSize: 20,
             backgroundColor: Colors.black,
