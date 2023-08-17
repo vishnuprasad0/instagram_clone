@@ -38,7 +38,7 @@ class Authmethods {
 
         // add profile pic to storage
         String profilePhotoUrl = await StorageMethods()
-            .uploadImageToStorage('profile_pictures', file!, false);
+            .uploadImageToStorage('profile_pictures', file!, false,username);
 
         model.User user = model.User(
             username: username,

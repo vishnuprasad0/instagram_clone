@@ -23,31 +23,37 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => UserProvider()),
-      ],
-      child: MaterialApp(
-          title: 'Instagram Clone',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData.dark()
-              .copyWith(scaffoldBackgroundColor: mobileBackgroundColor),
-          home: StreamBuilder(
+        providers: [
+          ChangeNotifierProvider(create: (_) => UserProvider()),
+        ],
+        child: MaterialApp(
+            title: 'Instagram Clone',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData.dark()
+                .copyWith(scaffoldBackgroundColor: mobileBackgroundColor),
+            home: StreamBuilder(
               stream: FirebaseAuth.instance.authStateChanges(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.active) {
                   if (snapshot.hasData) {
+                    // User is authenticated, show the main screen
                     return const ResponsiveLayout(
-                        webScreenLayout: WebScreenLayout(),
-                        mobileScreenLayout: MobileScreenLayout());
-                  } else if (snapshot.hasError) {
-                    return showSnackBar(snapshot.error.toString(), context);
+                      webScreenLayout: WebScreenLayout(),
+                      mobileScreenLayout: MobileScreenLayout(),
+                    );
+                  } else {
+                    // User is not authenticated, show the login screen
+                    return const LoginScreen();
                   }
-                }
-                if (snapshot.connectionState == ConnectionState.waiting) {
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  // Waiting for the stream to become active show a loading indicator
                   return const CircularProgressIndicator(color: primaryColor);
+                } else {
+                  // An error occurred show a snackbar with the error message
+                  return showSnackBar(snapshot.error.toString(), context);
                 }
-                return const LoginScreen();
-              })),
-    );
+              },
+            )));
   }
 }

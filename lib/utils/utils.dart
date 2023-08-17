@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:image_picker/image_picker.dart";
+import "package:instagram_clone/constants/colors.dart";
 
 // for picking up image
 pickImage(ImageSource source) async {
@@ -11,5 +12,9 @@ pickImage(ImageSource source) async {
 }
 
 showSnackBar(String content, BuildContext context) {
-  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(content)));
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(
+    content,
+    style: const TextStyle(color: blueColor, backgroundColor: primaryColor),
+  )));
 }
