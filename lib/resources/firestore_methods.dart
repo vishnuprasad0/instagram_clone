@@ -14,7 +14,8 @@ class FireStoreMethods {
     try {
       String photoUrl = await StorageMethods()
           .uploadImageToStorage('posts', file, true, username);
-      String postId = const Uuid().v1(); // creates unique id based on time with pkg uuid
+      String postId =
+          const Uuid().v1(); // creates unique id based on time with pkg uuid
       Post post = Post(
         description: description,
         uid: uid,
@@ -27,6 +28,27 @@ class FireStoreMethods {
       );
       _firestore.collection('posts').doc(postId).set(post.toJson());
       res = "success";
+    } catch (err) {
+      res = err.toString();
+    }
+    return res;
+  }
+
+  Future<String> likePost(String postId, String uid, List likes) async {
+    String res = "Some error occurred";
+    try {
+      if (likes.contains(uid)) {
+        // if the likes list contains the user uid, we need to remove it
+        _firestore.collection('posts').doc(postId).update({
+          'likes': FieldValue.arrayRemove([uid])
+        });
+      } else {
+        // else we need to add uid to the likes array
+        _firestore.collection('posts').doc(postId).update({
+          'likes': FieldValue.arrayUnion([uid])
+        });
+      }
+      res = 'success';
     } catch (err) {
       res = err.toString();
     }

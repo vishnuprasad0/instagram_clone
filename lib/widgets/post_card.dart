@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:insta_like_button/insta_like_button.dart';
 import 'package:instagram_clone/constants/colors.dart';
 import 'package:instagram_clone/constants/instagram_icons_icons.dart';
+import 'package:instagram_clone/resources/firestore_methods.dart';
+import 'package:like_button/like_button.dart';
+import 'package:provider/provider.dart';
+import 'package:instagram_clone/models/user_model.dart' as model;
+import '../providers/user_provider.dart';
+import '../screens/comment_screen.dart';
 
 class PostCard extends StatelessWidget {
   final snap;
@@ -8,7 +15,11 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final model.User user = Provider.of<UserProvider>(context).getUser;
+    //needed model for uid
+
     //username and options
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -64,33 +75,54 @@ class PostCard extends StatelessWidget {
                 ),
               ],
             ),
-
             //post content,
           ),
           SizedBox(
-              height: MediaQuery.of(context).size.height * 0.30,
-              width: double.infinity,
-              child: Image.network(
+            height: MediaQuery.of(context).size.height * 0.30,
+            width: double.infinity,
+            child: InstaLikeButton(
+              image: NetworkImage(
                 snap['postUrl'],
-                fit: BoxFit.cover,
-              )),
+              ),
+              onChanged: () async {
+                await FireStoreMethods()
+                    .likePost(snap['postId'], snap['uid'], snap['likes']);
+              },
+              iconColor: Colors.red,
+              curve: Curves.fastLinearToSlowEaseIn,
+              imageBoxfit: BoxFit.cover,
+            ),
+          ),
           //like comment share buttons,
           Row(
             children: [
+              LikeButton(
+                likeBuilder: (bool isLiked) {
+                  return IconTheme(
+                    data: IconThemeData(size: isLiked ? 28.0 : 24),
+                    child: Icon(
+                      isLiked ? Icons.favorite : InstagramIcons.like,
+                      color: isLiked ? Colors.red : Colors.grey,
+                    ),
+                  );
+                },
+                onTap: (isLiked) async {
+                  await FireStoreMethods()
+                      .likePost(snap['postId'], snap['uid'], snap['likes']);
+                  return isLiked;
+                },
+                size: 29,
+                isLiked: snap['likes'].contains(user.uid),
+              ),
               IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    InstagramIcons.like,
-                  )),
-              IconButton(
-                  onPressed: () {},
+                  onPressed: () =>
+                      Navigator.of(context, rootNavigator: true).push(
+                        MaterialPageRoute(
+                          builder: (context) => CommentScreen(),
+                        ),
+                      ),
                   icon: const Icon(
                     InstagramIcons.comment,
-                  )),
-              IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    InstagramIcons.arrow_messenger,
                   )),
               Expanded(
                   child: IconButton(

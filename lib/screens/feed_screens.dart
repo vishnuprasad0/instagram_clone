@@ -63,6 +63,7 @@ class _FeedScreenState extends State<FeedScreen> {
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) => PostCard(
                       snap: snapshot.data!.docs[index].data(),
+
                     ),
                   );
                 })));
