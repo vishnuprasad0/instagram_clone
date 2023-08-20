@@ -3,7 +3,8 @@ import 'package:instagram_clone/constants/colors.dart';
 import 'package:instagram_clone/constants/instagram_icons_icons.dart';
 
 class PostCard extends StatelessWidget {
-  const PostCard({Key? key}) : super(key: key);
+  final snap;
+  const PostCard({Key? key, required this.snap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,17 +18,17 @@ class PostCard extends StatelessWidget {
                 .copyWith(right: 0),
             child: Row(
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 16,
-                  backgroundColor: primaryColor,
+                  backgroundImage: NetworkImage(snap['profImage']),
                 ),
-                const Expanded(
+                Expanded(
                   child: Padding(
-                    padding: EdgeInsets.only(left: 10),
+                    padding: const EdgeInsets.only(left: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
-                      children: [Text('username')],
+                      children: [Text(snap['username'])],
                     ),
                   ),
                 ),
@@ -70,7 +71,7 @@ class PostCard extends StatelessWidget {
               height: MediaQuery.of(context).size.height * 0.30,
               width: double.infinity,
               child: Image.network(
-                'https://s3.amazonaws.com/media.mediapost.com/dam/cropped/2023/01/10/image-42_oihgDSL.png',
+                snap['postUrl'],
                 fit: BoxFit.cover,
               )),
           //like comment share buttons,
@@ -115,21 +116,21 @@ class PostCard extends StatelessWidget {
                         .titleSmall!
                         .copyWith(fontWeight: FontWeight.w900),
                     child: Text(
-                      '1.3m',
+                      '${snap['likes'].length} likes',
                       style: Theme.of(context).textTheme.bodyMedium,
                     )),
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.only(top: 8),
                   child: RichText(
-                    text: const TextSpan(
-                        style: TextStyle(color: primaryColor),
+                    text: TextSpan(
+                        style: const TextStyle(color: primaryColor),
                         children: [
                           TextSpan(
-                              text: 'username',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                          TextSpan(
-                              text: '  description or captions came hereee ')
+                              text: snap['username'],
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(text: '  ${snap['description']}')
                         ]),
                   ),
                 ),
