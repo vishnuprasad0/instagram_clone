@@ -118,7 +118,7 @@ class PostCard extends StatelessWidget {
                   onPressed: () =>
                       Navigator.of(context, rootNavigator: true).push(
                         MaterialPageRoute(
-                          builder: (context) => CommentScreen(),
+                          builder: (context) => CommentScreen(postId: snap['postId'],),
                         ),
                       ),
                   icon: const Icon(
