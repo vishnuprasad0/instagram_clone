@@ -120,7 +120,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       }
 
                       return MasonryGridView.count(
-                        crossAxisCount: 3,
+                        crossAxisCount: 2,
                         itemCount: (snapshot.data! as dynamic).docs.length,
                         itemBuilder: (context, index) => Image.network(
                           (snapshot.data! as dynamic).docs[index]['postUrl'],

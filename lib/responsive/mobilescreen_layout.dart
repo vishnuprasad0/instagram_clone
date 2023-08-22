@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_bottom_nav_bar/instagram_tab_view.dart';
 import 'package:instagram_clone/constants/colors.dart';
@@ -5,6 +6,8 @@ import 'package:instagram_clone/constants/instagram_icons_icons.dart';
 import 'package:instagram_clone/screens/add_post_screen.dart';
 import 'package:instagram_clone/screens/feed_screens.dart';
 import 'package:instagram_clone/screens/search_screen.dart';
+
+import '../screens/profile_screen.dart';
 // import 'package:instagram_clone/models/user_model.dart' as model;
 // import 'package:instagram_clone/providers/user_provider.dart';
 // import 'package:provider/provider.dart';
@@ -54,7 +57,9 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
                   icon: InstagramIcons.instagram_reels),
               InstagramTabItem(
                   label: '',
-                  page: const Text(''),
+                  page: ProfileScreen(
+                    uid: FirebaseAuth.instance.currentUser!.uid,
+                  ),
                   icon: InstagramIcons.instagram_user)
             ],
             iconType: IconType.icon));
