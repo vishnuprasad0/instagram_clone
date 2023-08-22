@@ -4,6 +4,7 @@ import 'package:instagram_clone/constants/colors.dart';
 import 'package:instagram_clone/constants/instagram_icons_icons.dart';
 import 'package:instagram_clone/screens/add_post_screen.dart';
 import 'package:instagram_clone/screens/feed_screens.dart';
+import 'package:instagram_clone/screens/search_screen.dart';
 // import 'package:instagram_clone/models/user_model.dart' as model;
 // import 'package:instagram_clone/providers/user_provider.dart';
 // import 'package:provider/provider.dart';
@@ -41,7 +42,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
               ),
               InstagramTabItem(
                   label: '',
-                  page: const Text(''),
+                  page: const SearchScreen(),
                   icon: InstagramIcons.instagram_search),
               InstagramTabItem(
                   label: '',
