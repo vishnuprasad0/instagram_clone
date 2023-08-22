@@ -1,23 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:instagram_clone/constants/colors.dart';
+import 'package:instagram_clone/providers/user_provider.dart';
+import 'package:instagram_clone/resources/firestore_methods.dart';
 import 'package:instagram_clone/utils/utils.dart';
 import 'package:instagram_clone/widgets/comment_card.dart';
 import 'package:provider/provider.dart';
 
+import '../constants/colors.dart';
 import '../models/user_model.dart';
-import '../providers/user_provider.dart';
-import '../resources/firestore_methods.dart';
 
 class CommentScreen extends StatefulWidget {
   final postId;
-  const CommentScreen({super.key, this.postId});
+  const CommentScreen({Key? key, required this.postId}) : super(key: key);
 
   @override
-  State<CommentScreen> createState() => _CommentScreenState();
+  _CommentsScreenState createState() => _CommentsScreenState();
 }
 
-class _CommentScreenState extends State<CommentScreen> {
+class _CommentsScreenState extends State<CommentScreen> {
   final TextEditingController commentEditingController =
       TextEditingController();
 
@@ -32,17 +32,13 @@ class _CommentScreenState extends State<CommentScreen> {
       );
 
       if (res != 'success') {
-        if (context.mounted) ;
-        // showSnackBar(context as String, res as BuildContext);
+        if (context.mounted) debugPrint('comment not success');
       }
       setState(() {
         commentEditingController.text = "";
       });
     } catch (err) {
-      // showSnackBar(
-      //   context as String,
-      //   err.toString() as BuildContext,
-      // );
+      debugPrint(err.toString());
     }
   }
 
@@ -50,59 +46,61 @@ class _CommentScreenState extends State<CommentScreen> {
   Widget build(BuildContext context) {
     final User user = Provider.of<UserProvider>(context).getUser;
 
-    return SafeArea(
-      child: Scaffold(
-        body: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('posts')
-              .doc(widget.postId)
-              .collection('comments')
-              .snapshots(),
-          builder: (context,
-              AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-
-            return ListView.builder(
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (ctx, index) => CommentCard(
-                snap: snapshot.data!.docs[index],
-              ),
-            );
-          },
-        ),
+    return Scaffold(
+      appBar: AppBar(
         backgroundColor: mobileSearchColor,
-        appBar: AppBar(
-          backgroundColor: mobileSearchColor,
-          title: const Text('comments'),
-          bottom: const PreferredSize(
-              child: Divider(
-                color: Colors.white,
-              ),
-              preferredSize: Size(20, 21)),
-          centerTitle: true,
+        title: const Text(
+          'Comments',
         ),
-        bottomNavigationBar: SafeArea(
-            child: Container(
+        bottom: const PreferredSize(
+            child: Divider(
+              color: Colors.white,
+            ),
+            preferredSize: Size(20, 21)),
+      ),
+      backgroundColor: mobileSearchColor,
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('posts')
+            .doc(widget.postId)
+            .collection('comments')
+            .snapshots(),
+        builder: (context,
+            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (ctx, index) => CommentCard(
+              snap: snapshot.data!.docs[index],
+            ),
+          );
+        },
+      ),
+      // text input
+      bottomNavigationBar: SafeArea(
+        child: Container(
           height: kToolbarHeight,
           margin:
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           padding: const EdgeInsets.only(left: 16, right: 8),
           child: Row(
             children: [
-              const CircleAvatar(
-                backgroundColor: primaryColor,
+              CircleAvatar(
+                backgroundImage: NetworkImage(user.photoUrl),
                 radius: 18,
               ),
-              const Expanded(
+              Expanded(
                 child: Padding(
-                  padding: EdgeInsets.only(left: 16, right: 8),
+                  padding: const EdgeInsets.only(left: 16, right: 8),
                   child: TextField(
+                    controller: commentEditingController,
                     decoration: InputDecoration(
-                      hintText: 'Comment as   usernm',
+                      hintText: 'Comment as ${user.username}',
                       border: InputBorder.none,
                     ),
                   ),
@@ -125,7 +123,7 @@ class _CommentScreenState extends State<CommentScreen> {
               )
             ],
           ),
-        )),
+        ),
       ),
     );
   }

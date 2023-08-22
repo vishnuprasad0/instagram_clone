@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:like_button/like_button.dart';
 
 class CommentCard extends StatelessWidget {
   final snap;
@@ -37,17 +39,29 @@ class CommentCard extends StatelessWidget {
                       ],
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      DateFormat.yMMMd().format(
+                        snap.data()['datePublished'].toDate(),
+                      ),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
           ),
           Container(
             padding: const EdgeInsets.all(8),
-            child: const Icon(
-              Icons.favorite,
-              size: 16,
+            child: const LikeButton(
+              
+              size: 18,
             ),
-          )
+          ),
         ],
       ),
     );

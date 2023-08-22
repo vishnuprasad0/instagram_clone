@@ -19,7 +19,6 @@ class PostCard extends StatelessWidget {
     //needed model for uid
 
     //username and options
-
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
