@@ -2,7 +2,10 @@
 
 ## Screenshots
 
-![App Screenshot](https://github.com/vishnuprasad0/instagram_clone/blob/main/screenshots/instagram%20clone%20banner.png?text=App+Screenshot+Here)
+<p align="center">
+  <img width="600" src="https://github.com/vishnuprasad0/instagram_clone/blob/main/screenshots/instagram%20clone%20banner.png" alt="Instagram clone">
+</p>
+
 
 
 
