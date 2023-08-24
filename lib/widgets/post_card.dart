@@ -1,17 +1,49 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:insta_like_button/insta_like_button.dart';
 import 'package:instagram_clone/constants/colors.dart';
 import 'package:instagram_clone/constants/instagram_icons_icons.dart';
 import 'package:instagram_clone/resources/firestore_methods.dart';
+import 'package:instagram_clone/utils/utils.dart';
 import 'package:like_button/like_button.dart';
 import 'package:provider/provider.dart';
 import 'package:instagram_clone/models/user_model.dart' as model;
 import '../providers/user_provider.dart';
 import '../screens/comment_screen.dart';
 
-class PostCard extends StatelessWidget {
+class PostCard extends StatefulWidget {
   final snap;
   const PostCard({Key? key, required this.snap}) : super(key: key);
+
+  @override
+  State<PostCard> createState() => _PostCardState();
+}
+
+class _PostCardState extends State<PostCard> {
+  int commentLen = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCommentLen();
+  }
+
+  fetchCommentLen() async {
+    try {
+      QuerySnapshot snap = await FirebaseFirestore.instance
+          .collection('posts')
+          .doc(widget.snap['postId'])
+          .collection('comments')
+          .get();
+      commentLen = snap.docs.length;
+    } catch (err) {
+      showSnackBar(
+        err.toString(),
+        context,
+      );
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +62,7 @@ class PostCard extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 16,
-                  backgroundImage: NetworkImage(snap['profImage']),
+                  backgroundImage: NetworkImage(widget.snap['profImage']),
                 ),
                 Expanded(
                   child: Padding(
@@ -38,7 +70,7 @@ class PostCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
-                      children: [Text(snap['username'])],
+                      children: [Text(widget.snap['username'])],
                     ),
                   ),
                 ),
@@ -81,11 +113,11 @@ class PostCard extends StatelessWidget {
             width: double.infinity,
             child: InstaLikeButton(
               image: NetworkImage(
-                snap['postUrl'],
+                widget.snap['postUrl'],
               ),
               onChanged: () async {
-                await FireStoreMethods()
-                    .likePost(snap['postId'], snap['uid'], snap['likes']);
+                await FireStoreMethods().likePost(widget.snap['postId'],
+                    widget.snap['uid'], widget.snap['likes']);
               },
               iconColor: Colors.red,
               curve: Curves.fastLinearToSlowEaseIn,
@@ -106,18 +138,20 @@ class PostCard extends StatelessWidget {
                   );
                 },
                 onTap: (isLiked) async {
-                  await FireStoreMethods()
-                      .likePost(snap['postId'], snap['uid'], snap['likes']);
+                  await FireStoreMethods().likePost(widget.snap['postId'],
+                      widget.snap['uid'], widget.snap['likes']);
                   return isLiked;
                 },
                 size: 29,
-                isLiked: snap['likes'].contains(user.uid),
+                isLiked: widget.snap['likes'].contains(user.uid),
               ),
               IconButton(
                   onPressed: () =>
                       Navigator.of(context, rootNavigator: true).push(
                         MaterialPageRoute(
-                          builder: (context) => CommentScreen(postId: snap['postId'],),
+                          builder: (context) => CommentScreen(
+                            postId: widget.snap['postId'],
+                          ),
                         ),
                       ),
                   icon: const Icon(
@@ -147,7 +181,7 @@ class PostCard extends StatelessWidget {
                         .titleSmall!
                         .copyWith(fontWeight: FontWeight.w900),
                     child: Text(
-                      '${snap['likes'].length} likes',
+                      '${widget.snap['likes'].length} likes',
                       style: Theme.of(context).textTheme.bodyMedium,
                     )),
                 Container(
@@ -158,20 +192,29 @@ class PostCard extends StatelessWidget {
                         style: const TextStyle(color: primaryColor),
                         children: [
                           TextSpan(
-                              text: snap['username'],
+                              text: widget.snap['username'],
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold)),
-                          TextSpan(text: '  ${snap['description']}')
+                          TextSpan(text: '  ${widget.snap['description']}')
                         ]),
                   ),
                 ),
+
+                //number of comments and captions
                 InkWell(
-                  onTap: () {},
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => CommentScreen(
+                        postId: widget.snap['postId'].toString(),
+                      ),
+                    ),
+                  ),
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: const Text(
-                      'View all 10 comments',
-                      style: TextStyle(fontSize: 16, color: secondaryColor),
+                    child: Text(
+                      'View all $commentLen comments',
+                      style:
+                          const TextStyle(fontSize: 16, color: secondaryColor),
                     ),
                   ),
                 ),

@@ -17,38 +17,43 @@ class _FeedScreenState extends State<FeedScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-            appBar: AppBar(
-              toolbarHeight: 70,
-              backgroundColor: mobileBackgroundColor,
-              centerTitle: false,
-              title: Padding(
-                padding: const EdgeInsets.only(top: 28, left: 3),
-                child: SvgPicture.asset(
-                  'assets/ic_instagram.svg',
-                  color: primaryColor,
-                  height: 36,
-                ),
+      appBar: AppBar(
+        toolbarHeight: 70,
+        backgroundColor: mobileBackgroundColor,
+        centerTitle: false,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 28, left: 3),
+          child: SvgPicture.asset(
+            'assets/ic_instagram.svg',
+            color: primaryColor,
+            height: 36,
+          ),
+        ),
+        actions: [
+          // IconButton(
+          //     padding: const EdgeInsets.only(top: 28, right: 4, left: 10),
+          //     onPressed: () {},
+          //     icon: const Icon(InstagramIcons.settings)),
+          IconButton(
+              padding: const EdgeInsets.only(top: 28, right: 15, left: 10),
+              onPressed: () {},
+              icon: const Icon(InstagramIcons.like)),
+          IconButton(
+              padding: const EdgeInsets.only(
+                top: 28,
+                right: 8,
               ),
-              actions: [
-                // IconButton(
-                //     padding: const EdgeInsets.only(top: 28, right: 4, left: 10),
-                //     onPressed: () {},
-                //     icon: const Icon(InstagramIcons.settings)),
-                IconButton(
-                    padding:
-                        const EdgeInsets.only(top: 28, right: 15, left: 10),
-                    onPressed: () {},
-                    icon: const Icon(InstagramIcons.like)),
-                IconButton(
-                    padding: const EdgeInsets.only(
-                      top: 28,
-                      right: 8,
-                    ),
-                    onPressed: () {},
-                    icon: const Icon(InstagramIcons.chat)),
-              ],
-            ),
-            body: StreamBuilder(
+              onPressed: () {},
+              icon: const Icon(InstagramIcons.chat)),
+        ],
+      ),
+      body: Column(
+        children: [
+          const Row(
+            children: [],
+          ),
+          Expanded(
+            child: StreamBuilder(
                 stream:
                     FirebaseFirestore.instance.collection('posts').snapshots(),
                 builder: (context,
@@ -63,9 +68,12 @@ class _FeedScreenState extends State<FeedScreen> {
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) => PostCard(
                       snap: snapshot.data!.docs[index].data(),
-
                     ),
                   );
-                })));
+                }),
+          ),
+        ],
+      ),
+    ));
   }
 }
